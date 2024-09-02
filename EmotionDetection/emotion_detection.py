@@ -33,6 +33,15 @@ def emotion_detector(text_to_analyze):
             'sadness': 0.1,
             'dominant_emotion': 'joy'
         }
+        >>> emotion_detector("")
+        {
+            'anger': None,
+            'disgust': None,
+            'fear': None,
+            'joy': None,
+            'sadness': None,
+            'dominant_emotion': None
+        }
     """
 
     # URL of the emotion detection service
@@ -47,6 +56,17 @@ def emotion_detector(text_to_analyze):
     response = requests.post(url, json=my_obj, headers=header, timeout=5)
     # Format the response text as a JSON object
     formatted_response = json.loads(response.text)
+    # Initialize empty dictionary to store the emotion scores
+    scores = {}
+    # If text is not provided, return None for all properties
+    if response.status_code == 400:
+        scores["anger"] = None
+        scores["disgust"] = None
+        scores["fear"] = None
+        scores["joy"] = None
+        scores["sadness"] = None
+        scores["dominant_emotion"] = None
+        return scores
     # Extract the emotion and score from the formatted response
     scores = formatted_response["emotionPredictions"][0]["emotion"]
     # Determine the dominant emotion based on the highest
